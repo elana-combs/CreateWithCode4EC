@@ -20,5 +20,10 @@ public class Enemy : MonoBehaviour
 
         Vector3 lookDirection = (player.transform.position - transform.position).normalized;
         enemyRb.AddForce(lookDirection * speed); //the Enemy tracks the player, but with "normalized", it pursues at a standard speed.
+
+        if (transform.position.y < -10) // destroys the Enemy when it falls off the platform.
+        {
+            Destroy(gameObject);
+        }
     }
 }
