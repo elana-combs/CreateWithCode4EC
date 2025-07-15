@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private float powerUpStrength = 15f;
     public float speed = 5.0f;
     public bool hasPowerup = false;
+    public GameObject powerupIndicator;
 
 
     void Start()
@@ -21,6 +23,8 @@ public class PlayerController : MonoBehaviour
         float forwardInput = Input.GetAxis("Vertical"); //automatically up/down as movement keys
 
         playerRb.AddForce(focalPoint.transform.forward * forwardInput * speed); //Allows the player to move directionally with the rotation of the focal point.
+
+        powerupIndicator.transform.position = transform.position + new Vector3(0, -0.5f, 0); // allows the powerup indicator to follow the player sphere, offset by -0.5 on the y.
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,8 +32,17 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Powerup")) // when the player collides with an object with the Powerup tag, the Powerup object will be destroyed, and the hasPowerup boolean will change to True.
         {
             hasPowerup = true;
+            powerupIndicator.gameObject.SetActive(true); // activates the powerup indicator game object.
             Destroy(other.gameObject);
+            StartCoroutine(PowerupCountdownRoutine());
         }
+    }
+
+    IEnumerator PowerupCountdownRoutine()
+    {
+        yield return new WaitForSeconds(7); //when the Enumerator is triggered, the script must wait 7 seconds before changing powerup to false.
+        hasPowerup = false;
+        powerupIndicator.gameObject.SetActive(false); // disables the powerup indicator game object.
     }
 
     private void OnCollisionEnter(Collision collision) // only activates if the player has a powerup AND collides with an enemy.
@@ -44,4 +57,6 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Collided with " + collision.gameObject.name + " with powerup set to " + hasPowerup);
         }
     }
+
+
 }
