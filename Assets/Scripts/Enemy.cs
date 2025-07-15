@@ -17,6 +17,8 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        enemyRb.AddForce((player.transform.position - transform.position).normalized * speed); //the Enemy tracks the player, but with "normalized", it pursues at a standard speed.
+
+        Vector3 lookDirection = (player.transform.position - transform.position).normalized;
+        enemyRb.AddForce(lookDirection * speed); //the Enemy tracks the player, but with "normalized", it pursues at a standard speed.
     }
 }
